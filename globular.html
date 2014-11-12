@@ -1,0 +1,130 @@
+<html lang="en">
+    <head>
+        <title> Chrome Globe for VB </title>
+        <meta name="description" content= Which countries are mentioned the most in our collection of podcasts?">
+        <meta charset="utf-8">
+        <style type="text/css">
+            html {
+                height: 100%;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                background: #000000 url(/globe/loading.gif) center center no-repeat;
+                color: #fff
+                font-family: sans-serif;
+                font-size: 13px;
+                line-height: 20px;
+                height: 100%;
+            }
+            #info {
+                font-size: 11px;
+                position: absolute;
+                bottom: 5px;
+                background-color: rgba(0,0,0,0.8);
+                border-radius: 3px;
+                right: 10px;
+                padding: 10px;
+            }
+            #currentInfo {
+                width: 270px;
+                position: absolute;
+                left: 20px;
+                top: 63px;
+                background-color: rgba(0,0,0,0.2);
+                border-top: 1px solid rgba(255,255,255,0.4);
+                padding: 10px;
+            }
+            a {
+                color: #aaa;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .bull {
+                padding: 0 5px;
+                color: #555;
+            }
+            #title {
+                position: absolute;
+                top: 20px;
+                width: 270px;
+                left: 20px;
+                background-color: rgba(0,0,0,0.2);
+                border-radius: 3px;
+                font: 20px Georgia;
+                padding: 10px;
+            }
+            #info {
+                font-size: 11px;
+                position: absolute;
+                bottom: 5px;
+                background-color: rgba(0,0,0,0.8);
+                border-radius: 3px;
+                right: 10px;
+                padding: 10px;
+        </style>
+    </head>
+<body>
+<div id="container"></div>
+<div id="info">
+    <strong><a href="http://www.chromeexperiments.com/globe">WebGL Globe</a></strong> <span class="bull">&bull;
+    </span> Created By Aleena Saha <span class= "bull">&bull; </Span> Data acquired from <a href="http://voicebase.com/files"> VoiceBase</a>
+  </div>
+ <div id= "title"> VB Globe </div>
+ <a id="ce" href="http://www.chromeexperiments.com/globe">
+    <span>This is a Chrome Experiment</span>
+  </a>
+
+<script type="text/javascript" src="/globe/third-party/Three/ThreeWebGL.js"></script>
+  <script type="text/javascript" src="/globe/third-party/Three/ThreeExtras.js"></script>
+  <script type="text/javascript" src="/globe/third-party/Three/RequestAnimationFrame.js"></script>
+  <script type="text/javascript" src="/globe/third-party/Three/Detector.js"></script>
+  <script type="text/javascript" src="/globe/third-party/Tween.js"></script>
+  <script type="text/javascript" src="/globe/globe.js"></script>
+  <script type="text/javascript">
+
+    if(!Detector.webgl){
+      Detector.addGetWebGLMessage();
+    } else {
+
+// Where to put the globe?
+var container = document.getElementById( 'container' );
+
+// Make the globe
+var globe = new DAT.Globe( container );
+
+
+// We're going to ask a file for the JSON data.
+var xhr = new XMLHttpRequest();
+
+// Where do we get the data?
+xhr.open( 'GET', 'sampleglobe.json', true );
+
+// What do we do when we have it?
+xhr.onreadystatechange = function() {
+
+    // If we've received the data
+    if ( xhr.readyState === 4 && xhr.status === 200 ) {
+
+        // Parse the JSON
+        var data = JSON.parse( xhr.responseText );
+
+        // Tell the globe about your JSON data
+        for ( var i = 0; i < data.length; i ++ ) {
+            globe.addData( data[i][1], 'magnitude', data[i][0] );
+        }
+
+        // Create the geometry
+        globe.createPoints();
+
+        // Begin animation
+        globe.animate();
+
+    }
+
+};
+
+// Begin request
+xhr.send( null );
